@@ -25,8 +25,9 @@ impl Database {
         self.data.clear()
     }
     fn get_show_data(&self,page:usize,row_len:usize)->Vec<Vec<Vec<String>>>{
-        if self.data.len()<(page+1)*row_len{
-             self.data.clone()[page*row_len..].to_vec()
+        if (page+1)*row_len>=self.data.len(){
+            self.data.clone()[page*row_len..].to_vec()
+
         }else{
             self.data.clone()[page*row_len..(page+1)*row_len].to_vec()
         }
