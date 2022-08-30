@@ -34,8 +34,28 @@ impl Database {
     }
 }
 
+#[pyfunction]
+fn gif_info(path:String) -> Vec<u16> {
+    use std::fs::File;
+    let mut timedelay:Vec<u16> = Vec::new();
+    if let Ok(input) = File::open(path)
+    {
+        let options = gif::DecodeOptions::new();
+        if let Ok(mut decoder) = options.read_info(input){
+            while let Some(frame) = decoder.read_next_frame().unwrap() {
+                    timedelay.push(frame.delay*10);
+                    // println!("{}",frame.delay);
+            }  
+
+        }
+    
+    }
+    timedelay
+}
+
 #[pymodule]
 fn tktkrs(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_class::<Database>()?;
+    m.add_function(wrap_pyfunction!(gif_info, m)?)?;
     Ok(())
 }
